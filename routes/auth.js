@@ -13,23 +13,24 @@ const webServer = express.Router();
 
 const saltRounds = 12;
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+// ***FORGOT PASSWORD***
+// const transporter = nodemailer.createTransport({
+//   host: process.env.SMTP_HOST,
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: process.env.SMTP_USER,
+//     pass: process.env.SMTP_PASS,
+//   },
+// });
 
-transporter.verify((error) => {
-  if (error) {
-    console.log("Nodemailer is not ready", error);
-  } else {
-    console.log("Nodemailer is ready to send emails");
-  }
-});
+// transporter.verify((error) => {
+//   if (error) {
+//     console.log("Nodemailer is not ready", error);
+//   } else {
+//     console.log("Nodemailer is ready to send emails");
+//   }
+// });
 
 // สร้าง database schema
 const userSchema = new Schema(
@@ -197,54 +198,55 @@ webServer.get("/logout", (req, res) => {
     .json({ messgae: "Successfully logged out" });
 });
 
-webServer.post("/forget-password/email", async (req, res) => {
-  try {
-    const email = req.body.email;
-    if (!email) {
-      return res.status(400).json({ error: { message: "email not provided" } });
-    }
-    if (!isValidEmail(email)) {
-      return res.status(400).send({ error: { message: "invalid email" } });
-    }
+// ***FORGOT PASSWORD***
+// webServer.post("/forget-password/email", async (req, res) => {
+//   try {
+//     const email = req.body.email;
+//     if (!email) {
+//       return res.status(400).json({ error: { message: "email not provided" } });
+//     }
+//     if (!isValidEmail(email)) {
+//       return res.status(400).send({ error: { message: "invalid email" } });
+//     }
 
-    const user = await databaseClient
-      .db()
-      .collection("users_profile")
-      .findOne({ email });
+//     const user = await databaseClient
+//       .db()
+//       .collection("users_profile")
+//       .findOne({ email });
 
-    if (!user) {
-      console.log(`Reset password request from unknown email ${email}`);
-      return res.json({ message: "reset password request accepted" });
-    }
+//     if (!user) {
+//       console.log(`Reset password request from unknown email ${email}`);
+//       return res.json({ message: "reset password request accepted" });
+//     }
 
-    const resetKey = uuidv4();
+//     const resetKey = uuidv4();
 
-    await databaseClient
-      .db()
-      .collection("users_profile")
-      .updateOne(
-        { _id: new ObjectId(user._id) },
-        { $set: { resetPasswordKey: resetKey } }
-      );
+//     await databaseClient
+//       .db()
+//       .collection("users_profile")
+//       .updateOne(
+//         { _id: new ObjectId(user._id) },
+//         { $set: { resetPasswordKey: resetKey } }
+//       );
 
-    const mailOptions = {
-      from: process.env.SMTP_SENDER,
-      to: email,
-      subject: "[Siberian Whiskey] Reset your password",
-      html: `
-    <h1>Reset your password</h1>
-    <p>Please follow this link to <a href="https://doggo-project.vercel.app/change-password-account?key=${resetKey}">reset your password</a></p>
-    `,
-    };
+//     const mailOptions = {
+//       from: process.env.SMTP_SENDER,
+//       to: email,
+//       subject: "[Siberian Whiskey] Reset your password",
+//       html: `
+//     <h1>Reset your password</h1>
+//     <p>Please follow this link to <a href="https://doggo-project.vercel.app/change-password-account?key=${resetKey}">reset your password</a></p>
+//     `,
+//     };
 
-    await transporter.sendMail(mailOptions);
-    console.log("Email has been sent!");
-    return res.json({ message: "reset password request accepted" });
-  } catch (e) {
-    console.log("Failed to send email with error:", e);
-    return res.status(500).json({ error: { message: "failed to send email" } });
-  }
-});
+//     await transporter.sendMail(mailOptions);
+//     console.log("Email has been sent!");
+//     return res.json({ message: "reset password request accepted" });
+//   } catch (e) {
+//     console.log("Failed to send email with error:", e);
+//     return res.status(500).json({ error: { message: "failed to send email" } });
+//   }
+// });
 
 webServer.get("/forget-password/validate", async (req, res) => {
   try {
