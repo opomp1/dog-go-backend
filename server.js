@@ -23,28 +23,10 @@ const webServer = express();
 // middle ware
 webServer.use(express.json());
 webServer.use(express.urlencoded({ extended: true }));
-
-webServer.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://dog-go-frontend.vercel.app"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-
-  next();
-});
-
 webServer.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: true,
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // Allow necessary HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
   })
 );
 webServer.use(cookieParser());
