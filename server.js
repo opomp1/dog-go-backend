@@ -27,6 +27,8 @@ webServer.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // Allow necessary HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
   })
 );
 webServer.use(cookieParser());
