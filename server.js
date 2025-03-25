@@ -25,7 +25,7 @@ webServer.use(express.json());
 webServer.use(express.urlencoded({ extended: true }));
 webServer.use(
   cors({
-    origin: true,
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
   })
 );
